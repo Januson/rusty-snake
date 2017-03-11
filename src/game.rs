@@ -5,18 +5,20 @@ use piston::input::{ Button, RenderArgs, UpdateArgs };
 use piston::input::keyboard::Key;
 use std::collections::VecDeque;
 
+use food::*;
 use snake::*;
 
 #[derive(PartialEq)]
-enum State {
+pub enum State {
     Playing,
     Paused,
     GameOver,
 }
 
 pub struct Game {
+    pub food: Vec<Food>,
     pub snake: Snake,
-    state: State,
+    pub state: State,
     time: f64,
     update_time: f64,
 }
@@ -24,10 +26,11 @@ pub struct Game {
 impl Game {
     pub fn new() -> Game {
         let mut tail = VecDeque::new();
-        tail.push_back(Point { x: 2, y: 3 });
-        tail.push_back(Point { x: 2, y: 2 });
-        tail.push_back(Point { x: 2, y: 1 });
+        tail.push_back(Point { x: 12, y: 11 });
+        tail.push_back(Point { x: 12, y: 12 });
+        tail.push_back(Point { x: 12, y: 13 });
         Game {
+            food: vec![],
             snake: Snake::new(tail, Key::Up),
             state: State::Playing,
             time: ::UPDATE_TIME,
@@ -43,9 +46,18 @@ impl Game {
                 clear(color::hex("000000"), gl);
                 return;
             }
-            clear(color::hex("001122"), gl);
+            //clear(color::hex("001122"), gl);
+            clear(bg_color, gl);
 
-            //self.snake.render(Context::new_viewport(args.viewport()).transform, gl);
+            if self.food.is_empty() {
+                let f = Food::new();
+                &self.food.push(f);
+            }
+
+            for ref mut f in &self.food {
+                f.render(c, gl);
+            }
+
             self.snake.render(c, gl);
         });
     }

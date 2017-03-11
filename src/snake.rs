@@ -5,8 +5,10 @@ use piston::input::Button;
 use piston::input::keyboard::Key;
 use std::collections::VecDeque;
 
+use game::State;
 use game::Game;
 
+#[derive(PartialEq, Copy, Clone)]
 pub struct Point {
     pub x: i8,
     pub y: i8,
@@ -54,24 +56,42 @@ impl Snake {
     }
 
     fn mv(g: &mut Game, p: Point) {
-        let mut xy = Point {
+        let mut head = Point {
             x: g.snake.tail.front().unwrap().x + p.x,
             y: g.snake.tail.front().unwrap().y + p.y,
         };
-        if xy.x >= ::BOARD_WIDTH {
-            xy.x = 0;
-        } else if xy.x < 0 {
-            xy.x = ::BOARD_WIDTH - 1;
+        if head.x >= ::BOARD_WIDTH {
+            head.x = 0;
+        } else if head.x < 0 {
+            head.x = ::BOARD_WIDTH - 1;
         }
-        if xy.y >= ::BOARD_HEIGHT {
-            xy.y = 0;
-        } else if xy.y < 0 {
-            xy.y = ::BOARD_HEIGHT - 1;
+        if head.y >= ::BOARD_HEIGHT {
+            head.y = 0;
+        } else if head.y < 0 {
+            head.y = ::BOARD_HEIGHT - 1;
         }
 
+        if g.snake.collides(head) {
+            g.state = State::GameOver;
+            println!("Game Over!");
+            return;
+        }
+
+        for i in 0..g.food.len() {
+            if g.food[i].point == head {
+                let f = g.food.swap_remove(i);
+                let point = *g.snake.tail.front().unwrap();
+                g.snake.tail.push_back(point);
+                break;
+            }
+        }
 
         g.snake.tail.pop_back();
-        g.snake.tail.push_front(xy);
+        g.snake.tail.push_front(head);
+    }
+
+    fn collides(&self, point: Point) -> bool {
+        self.tail.iter().any(|t| *t == point)
     }
 
     pub fn key_press(&mut self, button: &Button) {

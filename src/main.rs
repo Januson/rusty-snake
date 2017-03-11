@@ -10,12 +10,13 @@ use piston::event_loop::{ Events, EventSettings };
 use piston::input::*;
 use piston::window::WindowSettings;
 
+mod food;
 mod game;
 mod snake;
 
-const BOARD_WIDTH: i8 = 15;
-const BOARD_HEIGHT: i8 = 15;
-const TILE_SIZE: f64 = 50.0;
+const BOARD_WIDTH: i8 = 30;
+const BOARD_HEIGHT: i8 = 30;
+const TILE_SIZE: f64 = 25.0;
 const UPDATE_TIME: f64 = 0.15;
 
 fn main() {
