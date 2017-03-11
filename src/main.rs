@@ -24,10 +24,11 @@ fn main() {
         "snake",
         [BOARD_WIDTH as u32 * TILE_SIZE as u32,
         BOARD_HEIGHT as u32 * TILE_SIZE as u32]
-    ).opengl(opengl)
-    .exit_on_esc(true)
-    .build()
-    .unwrap();
+    )
+        .opengl(opengl)
+        .exit_on_esc(true)
+        .build()
+        .unwrap();
 
     let mut game = game::Game::new();
     let mut gl = GlGraphics::new(opengl);

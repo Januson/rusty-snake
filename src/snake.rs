@@ -85,9 +85,19 @@ impl Snake {
             Keyboard(Down) => Down,
             _ => return,
         };
-        if true {
+        if Snake::opposite_arrow(key) != self.last_pressed {
             self.keys.push_back(key);
             self.last_pressed = key;
         } 
+    }
+
+    fn opposite_arrow(key: Key) -> Key {
+        match key {
+            Key::Down => Key::Up,
+            Key::Up => Key::Down,
+            Key::Left => Key::Right,
+            Key::Right => Key::Left,
+            other => other,
+        }
     }
 }
