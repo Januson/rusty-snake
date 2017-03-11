@@ -46,7 +46,6 @@ impl Game {
                 clear(color::hex("000000"), gl);
                 return;
             }
-            //clear(color::hex("001122"), gl);
             clear(bg_color, gl);
 
             if self.food.is_empty() {
@@ -78,9 +77,15 @@ impl Game {
         use piston_window::Button::Keyboard;
         use piston_window::Key;
 
-        match (*button, &self.state) {
-            (Keyboard(Key::Escape), _) => {
+        match *button {
+            Keyboard(Key::Escape) => {
 
+            },
+            Keyboard(Key::P) if self.state == State::Playing => {
+                self.state = State::Paused;
+            },
+            Keyboard(Key::P) if self.state == State::Paused => {
+                self.state = State::Playing;
             },
             _ => {
                 self.snake.key_press(button);
