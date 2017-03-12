@@ -1,4 +1,4 @@
-use graphics::{ color, clear };
+use graphics::clear;
 use graphics::context::Context;
 use opengl_graphics::GlGraphics;
 use piston::input::{ Button, RenderArgs, UpdateArgs };
@@ -6,6 +6,7 @@ use piston::input::keyboard::Key;
 use std::collections::VecDeque;
 
 use food::*;
+use settings::Settings;
 use snake::*;
 
 #[derive(PartialEq)]
@@ -15,23 +16,25 @@ pub enum State {
     GameOver,
 }
 
-pub struct Game {
+pub struct Game<'a> {
     pub food: Vec<Food>,
-    pub snake: Snake,
+    settings: &'a Settings,
+    pub snake: Snake<'a>,
     pub state: State,
     time: f64,
     update_time: f64,
 }
 
-impl Game {
-    pub fn new() -> Game {
+impl<'a> Game<'a> {
+    pub fn new(settings: &'a Settings) -> Game {
         let mut tail = VecDeque::new();
         tail.push_back(Point { x: 12, y: 11 });
         tail.push_back(Point { x: 12, y: 12 });
         tail.push_back(Point { x: 12, y: 13 });
         Game {
             food: vec![],
-            snake: Snake::new(tail, Key::Up),
+            settings: settings,
+            snake: Snake::new(tail, Key::Up, settings),
             state: State::Playing,
             time: ::UPDATE_TIME,
             update_time: ::UPDATE_TIME,
@@ -40,13 +43,12 @@ impl Game {
 
     pub fn render(&mut self, args: &RenderArgs, gl: &mut GlGraphics) {
         let ref c = Context::new_abs(args.width as f64,args.height as f64);
-        let bg_color = color::hex("222d4a");
         gl.draw(args.viewport(), |_, gl| {
             if self.state == State::GameOver {
-                clear(color::hex("000000"), gl);
+                clear(self.settings.board_color, gl);
                 return;
             }
-            clear(bg_color, gl);
+            clear(self.settings.board_color, gl);
 
             if self.food.is_empty() {
                 let f = Food::new();

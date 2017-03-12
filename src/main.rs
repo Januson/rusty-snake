@@ -12,7 +12,10 @@ use piston::window::WindowSettings;
 
 mod food;
 mod game;
+mod settings;
 mod snake;
+
+use settings::Settings;
 
 const BOARD_WIDTH: i8 = 30;
 const BOARD_HEIGHT: i8 = 30;
@@ -21,17 +24,18 @@ const UPDATE_TIME: f64 = 0.15;
 
 fn main() {
     let opengl = OpenGL::V3_2;
+    let settings = Settings::new();
     let mut window: Window = WindowSettings::new(
         "snake",
-        [BOARD_WIDTH as u32 * TILE_SIZE as u32,
-        BOARD_HEIGHT as u32 * TILE_SIZE as u32]
+        [settings.board_width as u32 * settings.tile_size as u32,
+        settings.board_height as u32 * settings.tile_size as u32]
     )
         .opengl(opengl)
         .exit_on_esc(true)
         .build()
         .unwrap();
 
-    let mut game = game::Game::new();
+    let mut game = game::Game::new(&settings);
     let mut gl = GlGraphics::new(opengl);
     let mut events = Events::new(EventSettings::new());
     while let Some(e) = events.next(&mut window) {

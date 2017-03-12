@@ -5,8 +5,9 @@ use piston::input::Button;
 use piston::input::keyboard::Key;
 use std::collections::VecDeque;
 
-use game::State;
 use game::Game;
+use settings::Settings;
+use game::State;
 
 #[derive(Clone, Copy, PartialEq)]
 pub struct Point {
@@ -14,26 +15,31 @@ pub struct Point {
     pub y: i8,
 }
 
-pub struct Snake {
+pub struct Snake<'a> {
     tail: VecDeque<Point>,
     keys: VecDeque<Key>,
     last_pressed: Key,
+    settings: &'a Settings,
 }
 
-impl Snake {
-    pub fn new (tail: VecDeque<Point>, key: Key) -> Snake {
+impl<'a> Snake<'a> {
+    pub fn new (tail: VecDeque<Point>, key: Key, settings: &'a Settings) -> Snake {
         Snake {
             tail: tail,
             keys: VecDeque::new(),
             last_pressed: key,
+            settings: settings,
         }
     }
 
     pub fn render(&self, c: &Context, gl: &mut GlGraphics) {
         for p in self.tail.iter() {
             rectangle(
-                color::hex("8ba673"),
-                rectangle::square(p.x as f64 * ::TILE_SIZE, p.y as f64 * ::TILE_SIZE, ::TILE_SIZE),
+                self.settings.snake_color,
+                rectangle::square(
+                    p.x as f64 * self.settings.tile_size,
+                    p.y as f64 * self.settings.tile_size,
+                    self.settings.tile_size),
                 c.transform, gl
             );
         }        
