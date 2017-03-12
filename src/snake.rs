@@ -46,13 +46,13 @@ impl<'a> Snake<'a> {
     }
 
     
-    pub fn update(g: &mut Game) {
+    pub fn update(&mut self) {
         use piston::input::keyboard::Key::*;
-        if g.snake.keys.is_empty() {
-            g.snake.keys.push_back(g.snake.last_pressed);
+        if self.keys.is_empty() {
+            self.keys.push_back(self.last_pressed);
         }
-        let k = g.snake.keys.pop_front().unwrap();
-        Snake::mv(g, match k {
+        let k = self.keys.pop_front().unwrap();
+        self.mv(match k {
             Right => Point { x: 1, y: 0 },
             Left => Point { x: -1, y: 0 },
             Up => Point { x: 0, y: -1 },
@@ -61,10 +61,10 @@ impl<'a> Snake<'a> {
         })
     }
 
-    fn mv(g: &mut Game, p: Point) {
+    fn mv(&mut self, p: Point) {
         let mut head = Point {
-            x: g.snake.tail.front().unwrap().x + p.x,
-            y: g.snake.tail.front().unwrap().y + p.y,
+            x: self.tail.front().unwrap().x + p.x,
+            y: self.tail.front().unwrap().y + p.y,
         };
         if head.x >= ::BOARD_WIDTH {
             head.x = 0;
@@ -77,21 +77,14 @@ impl<'a> Snake<'a> {
             head.y = ::BOARD_HEIGHT - 1;
         }
 
-        if g.snake.collides(&head) {
-            g.state = State::GameOver;
+        if self.collides(&head) {
+//            g.state = State::GameOver;
             println!("Game Over!");
             return;
         }
 
-//        let index = g.food.iter().position(|ref f| f.point == head);
-//        if index.is_some() {
-//            let f = g.food.swap_remove(index.unwrap());
-//            let p = *g.snake.tail.front().unwrap();
-//            g.snake.tail.push_back(p);
-//        }
-
-        g.snake.tail.pop_back();
-        g.snake.tail.push_front(head);
+        self.tail.pop_back();
+        self.tail.push_front(head);
     }
 
     fn collides(&self, point: &Point) -> bool {

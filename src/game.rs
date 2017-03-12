@@ -71,7 +71,7 @@ impl<'a> Game<'a> {
         self.time += args.dt;
         if self.time > self.update_time {
             self.time -= self.update_time;
-            Snake::update(self);
+            self.snake.update();
 
             let head = self.snake.tail.front().unwrap().clone();
             let i = self.food.iter().position(|ref f| f.point == head);
