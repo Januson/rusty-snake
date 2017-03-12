@@ -77,13 +77,11 @@ impl Snake {
             return;
         }
 
-        for i in 0..g.food.len() {
-            if g.food[i].point == head {
-                let f = g.food.swap_remove(i);
-                let point = *g.snake.tail.front().unwrap();
-                g.snake.tail.push_back(point);
-                break;
-            }
+        let index = g.food.iter().position(|ref f| f.point == head);
+        if index.is_some() {
+            let f = g.food.swap_remove(index.unwrap());
+            let p = *g.snake.tail.front().unwrap();
+            g.snake.tail.push_back(p);
         }
 
         g.snake.tail.pop_back();
