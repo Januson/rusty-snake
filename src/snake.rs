@@ -8,7 +8,7 @@ use std::collections::VecDeque;
 use game::State;
 use game::Game;
 
-#[derive(PartialEq, Copy, Clone)]
+#[derive(Clone, Copy, PartialEq)]
 pub struct Point {
     pub x: i8,
     pub y: i8,
@@ -71,7 +71,7 @@ impl Snake {
             head.y = ::BOARD_HEIGHT - 1;
         }
 
-        if g.snake.collides(head) {
+        if g.snake.collides(&head) {
             g.state = State::GameOver;
             println!("Game Over!");
             return;
@@ -88,8 +88,8 @@ impl Snake {
         g.snake.tail.push_front(head);
     }
 
-    fn collides(&self, point: Point) -> bool {
-        self.tail.iter().any(|t| *t == point)
+    fn collides(&self, point: &Point) -> bool {
+        self.tail.iter().any(|&t| &t == point)
     }
 
     pub fn key_press(&mut self, button: &Button) {
