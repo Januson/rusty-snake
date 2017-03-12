@@ -72,6 +72,14 @@ impl<'a> Game<'a> {
         if self.time > self.update_time {
             self.time -= self.update_time;
             Snake::update(self);
+
+            let head = self.snake.tail.front().unwrap().clone();
+            let i = self.food.iter().position(|ref f| f.point == head);
+            if i.is_some() {
+                let f = self.food.swap_remove(i.unwrap());
+                let p = *self.snake.tail.front().unwrap();
+                self.snake.tail.push_back(p);
+            }
         }
     }
 

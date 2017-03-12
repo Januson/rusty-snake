@@ -1,4 +1,4 @@
-use graphics::{ color, rectangle };
+use graphics::rectangle;
 use graphics::context::Context;
 use opengl_graphics::GlGraphics;
 use piston::input::Button;
@@ -16,7 +16,7 @@ pub struct Point {
 }
 
 pub struct Snake<'a> {
-    tail: VecDeque<Point>,
+    pub tail: VecDeque<Point>,
     keys: VecDeque<Key>,
     last_pressed: Key,
     settings: &'a Settings,
@@ -83,12 +83,12 @@ impl<'a> Snake<'a> {
             return;
         }
 
-        let index = g.food.iter().position(|ref f| f.point == head);
-        if index.is_some() {
-            let f = g.food.swap_remove(index.unwrap());
-            let p = *g.snake.tail.front().unwrap();
-            g.snake.tail.push_back(p);
-        }
+//        let index = g.food.iter().position(|ref f| f.point == head);
+//        if index.is_some() {
+//            let f = g.food.swap_remove(index.unwrap());
+//            let p = *g.snake.tail.front().unwrap();
+//            g.snake.tail.push_back(p);
+//        }
 
         g.snake.tail.pop_back();
         g.snake.tail.push_front(head);
