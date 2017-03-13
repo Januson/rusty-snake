@@ -17,11 +17,6 @@ mod snake;
 
 use settings::Settings;
 
-const BOARD_WIDTH: i8 = 30;
-const BOARD_HEIGHT: i8 = 30;
-const TILE_SIZE: f64 = 25.0;
-const UPDATE_TIME: f64 = 0.15;
-
 fn main() {
     let opengl = OpenGL::V3_2;
     let settings = Settings::new();

@@ -16,8 +16,8 @@ pub enum State {
     GameOver,
 }
 
-pub struct Game<'a> {
-    pub food: Vec<Food>,
+pub struct Game<'a: 'b, 'b> {
+    pub food: Vec<Food<'b>>,
     settings: &'a Settings,
     pub snake: Snake<'a>,
     pub state: State,
@@ -25,7 +25,7 @@ pub struct Game<'a> {
     update_time: f64,
 }
 
-impl<'a> Game<'a> {
+impl<'a, 'b> Game<'a, 'b> {
     pub fn new(settings: &'a Settings) -> Game {
         let mut tail = VecDeque::new();
         tail.push_back(Point { x: 12, y: 11 });
@@ -36,8 +36,8 @@ impl<'a> Game<'a> {
             settings: settings,
             snake: Snake::new(tail, Key::Up, settings),
             state: State::Playing,
-            time: ::UPDATE_TIME,
-            update_time: ::UPDATE_TIME,
+            time: settings.update_time,
+            update_time: settings.update_time,
         }
     }
 
@@ -51,7 +51,7 @@ impl<'a> Game<'a> {
             clear(self.settings.board_color, gl);
 
             if self.food.is_empty() {
-                let f = Food::new();
+                let f = Food::new(self.settings);
                 &self.food.push(f);
             }
 
