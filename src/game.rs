@@ -74,6 +74,10 @@ impl<'a> Game<'a> {
             self.snake.update();
 
             let head = self.snake.tail.front().unwrap().clone();
+            if self.snake.collides(&head) {
+                self.state = State::GameOver;
+                println!("Game Over!");
+            }
             let i = self.food.iter().position(|ref f| f.point == head);
             if i.is_some() {
                 let f = self.food.swap_remove(i.unwrap());

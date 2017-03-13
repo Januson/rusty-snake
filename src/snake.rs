@@ -5,9 +5,7 @@ use piston::input::Button;
 use piston::input::keyboard::Key;
 use std::collections::VecDeque;
 
-use game::Game;
 use settings::Settings;
-use game::State;
 
 #[derive(Clone, Copy, PartialEq)]
 pub struct Point {
@@ -66,29 +64,23 @@ impl<'a> Snake<'a> {
             x: self.tail.front().unwrap().x + p.x,
             y: self.tail.front().unwrap().y + p.y,
         };
-        if head.x >= ::BOARD_WIDTH {
+        if head.x >= self.settings.board_width {
             head.x = 0;
         } else if head.x < 0 {
-            head.x = ::BOARD_WIDTH - 1;
+            head.x = self.settings.board_width - 1;
         }
-        if head.y >= ::BOARD_HEIGHT {
+        if head.y >= self.settings.board_height {
             head.y = 0;
         } else if head.y < 0 {
-            head.y = ::BOARD_HEIGHT - 1;
-        }
-
-        if self.collides(&head) {
-//            g.state = State::GameOver;
-            println!("Game Over!");
-            return;
+            head.y = self.settings.board_height - 1;
         }
 
         self.tail.pop_back();
         self.tail.push_front(head);
     }
 
-    fn collides(&self, point: &Point) -> bool {
-        self.tail.iter().any(|&t| &t == point)
+    pub fn collides(&self, point: &Point) -> bool {
+        self.tail.iter().skip(1).any(|&t| &t == point)
     }
 
     pub fn key_press(&mut self, button: &Button) {
