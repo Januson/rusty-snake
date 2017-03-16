@@ -80,7 +80,7 @@ impl<'a> Snake<'a> {
     }
 
     pub fn collides(&self, point: &Point) -> bool {
-        self.tail.iter().skip(1).any(|&t| &t == point)
+        self.tail.iter().skip(1).any(|t| t == point)
     }
 
     pub fn key_press(&mut self, button: &Button) {

@@ -3,6 +3,8 @@ use graphics::context::Context;
 use opengl_graphics::GlGraphics;
 use piston::input::{ Button, RenderArgs, UpdateArgs };
 use piston::input::keyboard::Key;
+use rand::{thread_rng, sample};
+
 use std::collections::VecDeque;
 
 use food::*;
@@ -21,6 +23,7 @@ pub struct Game<'a: 'b, 'b> {
     settings: &'a Settings,
     pub snake: Snake<'a>,
     pub state: State,
+    tiles: Vec<Point>,
     time: f64,
     update_time: f64,
 }
@@ -36,6 +39,7 @@ impl<'a, 'b> Game<'a, 'b> {
             settings: settings,
             snake: Snake::new(tail, Key::Up, settings),
             state: State::Playing,
+            tiles: Game::init_tiles(settings),
             time: settings.update_time,
             update_time: settings.update_time,
         }
@@ -49,11 +53,6 @@ impl<'a, 'b> Game<'a, 'b> {
                 return;
             }
             clear(self.settings.board_color, gl);
-
-            if self.food.is_empty() {
-                let f = Food::new(self.settings);
-                &self.food.push(f);
-            }
 
             for ref mut f in &self.food {
                 f.render(c, gl);
@@ -84,6 +83,15 @@ impl<'a, 'b> Game<'a, 'b> {
                 let p = *self.snake.tail.front().unwrap();
                 self.snake.tail.push_back(p);
             }
+            if self.food.is_empty() {
+                let mut food = Vec::new();
+                for t in self.find_empty_tiles() {
+                    let f = Food::new(t.x, t.y, self.settings);
+                    food.push(f);
+                }
+                self.food.extend(food);
+            }
+
         }
     }
 
@@ -105,5 +113,24 @@ impl<'a, 'b> Game<'a, 'b> {
                 self.snake.key_press(button);
             }
         };
+    }
+
+    fn init_tiles(settings: &Settings) -> Vec<Point> {
+        let mut tiles: Vec<Point> = Vec::new();
+        for x in 0..settings.board_width {
+            for y in 0..settings.board_height {
+                tiles.push(Point {x: x, y: y});
+            }
+        }
+        tiles
+    }
+
+    fn find_empty_tiles(&self) -> Vec<&Point> {
+        let res: Vec<&Point> = self.tiles.iter()
+            .filter(|&x| !self.snake.tail.contains(x))
+            .collect::<Vec<_>>();
+        let mut rng = thread_rng();
+        let r = sample(&mut rng, res, 5);
+        r
     }
 }

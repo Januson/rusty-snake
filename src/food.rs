@@ -11,9 +11,9 @@ pub struct Food<'a> {
 }
 
 impl<'a> Food<'a> {
-    pub fn new(settings: &'a Settings) -> Food {
+    pub fn new(x: i8, y: i8, settings: &'a Settings) -> Food {
         Food {
-            point: Point { x: 20, y: 20 },
+            point: Point { x: x, y: y },
             settings: settings,
         }
     }

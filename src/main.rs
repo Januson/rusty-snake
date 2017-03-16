@@ -3,6 +3,7 @@ extern crate glutin_window;
 extern crate opengl_graphics;
 extern crate piston;
 extern crate piston_window;
+extern crate rand;
 
 use glutin_window::GlutinWindow as Window;
 use opengl_graphics::{ GlGraphics, OpenGL };
