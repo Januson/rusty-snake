@@ -3,7 +3,7 @@ use graphics::context::Context;
 use opengl_graphics::GlGraphics;
 use piston::input::{ Button, RenderArgs, UpdateArgs };
 use piston::input::keyboard::Key;
-use rand::{thread_rng, sample};
+use rand::{thread_rng, Rng, sample};
 
 use std::collections::VecDeque;
 
@@ -130,7 +130,8 @@ impl<'a, 'b> Game<'a, 'b> {
             .filter(|&x| !self.snake.tail.contains(x))
             .collect::<Vec<_>>();
         let mut rng = thread_rng();
-        let r = sample(&mut rng, res, 5);
+        let n: usize = rng.gen_range(1, self.settings.max_food) as usize;
+        let r = sample(&mut rng, res, n);
         r
     }
 }
