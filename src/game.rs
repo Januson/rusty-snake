@@ -7,7 +7,9 @@ use rand::{thread_rng, Rng, sample};
 
 use std::collections::VecDeque;
 
-use food::*;
+use food::Food;
+use level::Level;
+use level::level;
 use settings::Settings;
 use snake::*;
 
@@ -20,6 +22,7 @@ pub enum State {
 
 pub struct Game<'a: 'b, 'b> {
     pub food: Vec<Food<'b>>,
+    level: Level<'a>,
     settings: &'a Settings,
     pub snake: Snake<'a>,
     pub state: State,
@@ -36,6 +39,7 @@ impl<'a, 'b> Game<'a, 'b> {
         tail.push_back(Point { x: 12, y: 13 });
         Game {
             food: vec![],
+            level: level(settings),
             settings: settings,
             snake: Snake::new(tail, Key::Up, settings),
             state: State::Playing,
@@ -53,6 +57,8 @@ impl<'a, 'b> Game<'a, 'b> {
                 return;
             }
             clear(self.settings.board_color, gl);
+
+            self.level.render(c, gl);
 
             for ref mut f in &self.food {
                 f.render(c, gl);

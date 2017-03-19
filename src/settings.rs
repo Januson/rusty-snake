@@ -16,7 +16,7 @@ impl Settings {
             board_width: 30,
             board_height: 30,
             max_food: 4,
-            tile_size: 25.0,
+            tile_size: 20.0,
             update_time: 0.15,
             board_color: color::hex("192731"),
             snake_color: color::hex("8ba673"),

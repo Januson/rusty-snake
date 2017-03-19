@@ -13,6 +13,7 @@ use piston::window::WindowSettings;
 
 mod food;
 mod game;
+mod level;
 mod settings;
 mod snake;
 
