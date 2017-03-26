@@ -7,6 +7,7 @@ use snake::Point;
 
 pub struct Food<'a> {
     pub point: Point,
+    pub score: u16,
     settings: &'a Settings,
 }
 
@@ -14,6 +15,7 @@ impl<'a> Food<'a> {
     pub fn new(x: i8, y: i8, settings: &'a Settings) -> Food {
         Food {
             point: Point { x: x, y: y },
+            score: 200,
             settings: settings,
         }
     }

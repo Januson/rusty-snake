@@ -21,6 +21,7 @@ pub enum State {
 pub struct Game<'a: 'b, 'b> {
     pub food: Vec<Food<'b>>,
     level: Level<'a>,
+    score: u64,
     settings: &'a Settings,
     pub state: State,
     tiles: Vec<Point>,
@@ -34,6 +35,7 @@ impl<'a, 'b> Game<'a, 'b> {
         Game {
             food: vec![],
             level: level,
+            score: 0,
             settings: settings,
             state: State::Playing,
             tiles: Game::init_tiles(settings),
@@ -73,10 +75,12 @@ impl<'a, 'b> Game<'a, 'b> {
             if self.level.walls.iter().any(|w| w == &head) || self.level.snake.collides(&head) {
                 self.state = State::GameOver;
                 println!("Game Over!");
+                println!("Score: {}", self.score);
             }
             let i = self.food.iter().position(|ref f| f.point == head);
             if i.is_some() {
                 let f = self.food.swap_remove(i.unwrap());
+                self.score += f.score as u64;
                 let p = *self.level.snake.tail.front().unwrap();
                 self.level.snake.tail.push_back(p);
             }
