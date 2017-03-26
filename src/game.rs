@@ -2,16 +2,14 @@ use graphics::clear;
 use graphics::context::Context;
 use opengl_graphics::GlGraphics;
 use piston::input::{ Button, RenderArgs, UpdateArgs };
-use piston::input::keyboard::Key;
 use rand::{thread_rng, Rng, sample};
-
-use std::collections::VecDeque;
 
 use food::Food;
 use level::Level;
 use level::level;
 use settings::Settings;
-use snake::*;
+use snake::Point;
+use snake::Snake;
 
 #[derive(PartialEq)]
 pub enum State {
@@ -24,7 +22,6 @@ pub struct Game<'a: 'b, 'b> {
     pub food: Vec<Food<'b>>,
     level: Level<'a>,
     settings: &'a Settings,
-    pub snake: Snake<'a>,
     pub state: State,
     tiles: Vec<Point>,
     time: f64,
@@ -33,15 +30,11 @@ pub struct Game<'a: 'b, 'b> {
 
 impl<'a, 'b> Game<'a, 'b> {
     pub fn new(settings: &'a Settings) -> Game {
-        let mut tail = VecDeque::new();
-        tail.push_back(Point { x: 12, y: 11 });
-        tail.push_back(Point { x: 12, y: 12 });
-        tail.push_back(Point { x: 12, y: 13 });
+        let level = level(settings);
         Game {
             food: vec![],
-            level: level(settings),
+            level: level,
             settings: settings,
-            snake: Snake::new(tail, Key::Up, settings),
             state: State::Playing,
             tiles: Game::init_tiles(settings),
             time: settings.update_time,
@@ -63,8 +56,6 @@ impl<'a, 'b> Game<'a, 'b> {
             for ref mut f in &self.food {
                 f.render(c, gl);
             }
-
-            self.snake.render(c, gl);
         });
     }
 
@@ -76,18 +67,18 @@ impl<'a, 'b> Game<'a, 'b> {
         self.time += args.dt;
         if self.time > self.update_time {
             self.time -= self.update_time;
-            self.snake.update();
+            self.level.snake.update();
 
-            let head = self.snake.tail.front().unwrap().clone();
-            if self.snake.collides(&head) {
+            let head = self.level.snake.tail.front().unwrap().clone();
+            if self.level.walls.iter().any(|w| w == &head) || self.level.snake.collides(&head) {
                 self.state = State::GameOver;
                 println!("Game Over!");
             }
             let i = self.food.iter().position(|ref f| f.point == head);
             if i.is_some() {
                 let f = self.food.swap_remove(i.unwrap());
-                let p = *self.snake.tail.front().unwrap();
-                self.snake.tail.push_back(p);
+                let p = *self.level.snake.tail.front().unwrap();
+                self.level.snake.tail.push_back(p);
             }
             if self.food.is_empty() {
                 let mut food = Vec::new();
@@ -97,7 +88,6 @@ impl<'a, 'b> Game<'a, 'b> {
                 }
                 self.food.extend(food);
             }
-
         }
     }
 
@@ -116,7 +106,7 @@ impl<'a, 'b> Game<'a, 'b> {
                 self.state = State::Playing;
             },
             _ => {
-                self.snake.key_press(button);
+                self.level.snake.key_press(button);
             }
         };
     }
@@ -133,7 +123,8 @@ impl<'a, 'b> Game<'a, 'b> {
 
     fn find_empty_tiles(&self) -> Vec<&Point> {
         let res: Vec<&Point> = self.tiles.iter()
-            .filter(|&x| !self.snake.tail.contains(x))
+            .filter(|&x| !self.level.snake.tail.contains(x))
+            .filter(|&x| !self.level.walls.contains(x))
             .collect::<Vec<_>>();
         let mut rng = thread_rng();
         let n: usize = rng.gen_range(1, self.settings.max_food) as usize;

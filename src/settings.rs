@@ -8,6 +8,7 @@ pub struct Settings {
     pub update_time: f64,
     pub board_color: [f32; 4],
     pub snake_color: [f32; 4],
+    pub wall_color: [f32; 4],
 }
 
 impl Settings {
@@ -20,6 +21,7 @@ impl Settings {
             update_time: 0.15,
             board_color: color::hex("192731"),
             snake_color: color::hex("8ba673"),
+            wall_color: color::hex("111111"),
         }
     }
 }

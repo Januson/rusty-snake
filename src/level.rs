@@ -10,8 +10,8 @@ use snake::Snake;
 
 pub struct Level<'a> {
     settings: &'a Settings,
-    snake: Snake<'a>,
-    walls: Vec<Point>,
+    pub snake: Snake<'a>,
+    pub walls: Vec<Point>,
 }
 
 impl<'a> Level<'a> {
@@ -27,6 +27,7 @@ impl<'a> Level<'a> {
                 c.transform, gl
             );
         }
+        self.snake.render(c, gl);
     }
 }
 

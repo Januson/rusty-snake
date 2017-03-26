@@ -43,7 +43,6 @@ impl<'a> Snake<'a> {
         }        
     }
 
-    
     pub fn update(&mut self) {
         use piston::input::keyboard::Key::*;
         if self.keys.is_empty() {
