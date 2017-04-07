@@ -1,7 +1,6 @@
-//use graphics::{ color, rectangle };
-//use graphics::context::Context;
-//use opengl_graphics::GlGraphics;
-use piston_window::*;
+use piston_window::Context;
+use piston_window::G2d;
+use piston_window::rectangle;
 use piston::input::keyboard::Key;
 use std::collections::VecDeque;
 
@@ -19,7 +18,7 @@ impl<'a> Level<'a> {
     pub fn render(&self, c: &Context, g: &mut G2d) {
         for wall in self.walls.iter() {
             rectangle(
-                color::hex("111111"),
+                self.settings.wall_color,
                 rectangle::square(
                     wall.x as f64 * self.settings.tile_size,
                     wall.y as f64 * self.settings.tile_size,

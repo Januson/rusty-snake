@@ -1,20 +1,15 @@
-extern crate graphics;
-extern crate glutin_window;
 extern crate opengl_graphics;
 extern crate piston;
 extern crate piston_window;
 extern crate rand;
 extern crate find_folder;
 
-use opengl_graphics::{ GlGraphics, OpenGL };
+use opengl_graphics::OpenGL;
 use piston::event_loop::{ Events, EventSettings };
-use graphics::Transformed;
 use piston::input::*;
 use piston::window::WindowSettings;
 use piston_window::Glyphs;
 use piston_window::PistonWindow;
-use piston_window::text;
-use piston_window::clear;
 
 mod food;
 mod game;
@@ -45,7 +40,6 @@ fn main() {
     let mut glyphs = Glyphs::new(font, factory).unwrap();
 
     let mut game = game::Game::new(&settings, glyphs);
-    let mut gl = GlGraphics::new(opengl);
     let mut events = Events::new(EventSettings::new());
     while let Some(e) = events.next(&mut window) {
         if let Some(ref args) = e.render_args() {

@@ -1,4 +1,4 @@
-use graphics::color;
+use piston_window::color;
 
 pub struct Settings {
     pub board_width: i8,
@@ -7,6 +7,7 @@ pub struct Settings {
     pub tile_size: f64,
     pub update_time: f64,
     pub board_color: [f32; 4],
+    pub food_color: [f32; 4],
     pub snake_color: [f32; 4],
     pub wall_color: [f32; 4],
 }
@@ -20,6 +21,7 @@ impl Settings {
             tile_size: 20.0,
             update_time: 0.15,
             board_color: color::hex("192731"),
+            food_color: color::hex("b83e3e"),
             snake_color: color::hex("8ba673"),
             wall_color: color::hex("111111"),
         }

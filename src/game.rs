@@ -1,8 +1,4 @@
-//use graphics::clear;
-//use graphics::context::Context;
-//use graphics::text;
-//use opengl_graphics::GlGraphics;
-use piston::input::{ Button, RenderArgs, UpdateArgs };
+use piston::input::{ Button, UpdateArgs };
 use piston_window::*;
 use rand::{thread_rng, Rng, sample};
 
@@ -11,7 +7,6 @@ use level::Level;
 use level::level;
 use settings::Settings;
 use snake::Point;
-use snake::Snake;
 
 #[derive(PartialEq)]
 pub enum State {
@@ -50,13 +45,9 @@ impl<'a, 'b> Game<'a, 'b> {
 
     pub fn render(&mut self, e: &Input, window: &mut PistonWindow) {
         window.draw_2d(e, |c, g| {
-
-        //        let ref c = Context::new_abs(args.width as f64,args.height as f64);
             if self.state == State::GameOver {
                 clear(self.settings.board_color, g);
                 let transform = c.transform.trans(10.0, 100.0);
-
-//                clear([0.0, 0.0, 0.0, 1.0], g);
                 text::Text::new_color([0.0, 1.0, 0.0, 1.0], 32).draw(
                     "Game Over",
                     &mut self.glyphs,

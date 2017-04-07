@@ -1,5 +1,6 @@
-use piston_window::*;
-use opengl_graphics::GlGraphics;
+use piston_window::Context;
+use piston_window::G2d;
+use piston_window::rectangle;
 
 use settings::Settings;
 use snake::Point;
@@ -21,7 +22,7 @@ impl<'a> Food<'a> {
 
     pub fn render(&self, c: &Context, g: &mut G2d) {
         rectangle(
-            color::hex("b83e3e"),
+            self.settings.food_color,
             rectangle::square(
                 self.point.x as f64 * self.settings.tile_size,
                 self.point.y as f64 * self.settings.tile_size,
