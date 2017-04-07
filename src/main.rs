@@ -4,12 +4,17 @@ extern crate opengl_graphics;
 extern crate piston;
 extern crate piston_window;
 extern crate rand;
+extern crate find_folder;
 
-use glutin_window::GlutinWindow as Window;
 use opengl_graphics::{ GlGraphics, OpenGL };
 use piston::event_loop::{ Events, EventSettings };
+use graphics::Transformed;
 use piston::input::*;
 use piston::window::WindowSettings;
+use piston_window::Glyphs;
+use piston_window::PistonWindow;
+use piston_window::text;
+use piston_window::clear;
 
 mod food;
 mod game;
@@ -22,7 +27,7 @@ use settings::Settings;
 fn main() {
     let opengl = OpenGL::V3_2;
     let settings = Settings::new();
-    let mut window: Window = WindowSettings::new(
+    let mut window: PistonWindow = WindowSettings::new(
         "snake",
         [settings.board_width as u32 * settings.tile_size as u32,
         settings.board_height as u32 * settings.tile_size as u32]
@@ -32,12 +37,19 @@ fn main() {
         .build()
         .unwrap();
 
-    let mut game = game::Game::new(&settings);
+    let assets = find_folder::Search::ParentsThenKids(3, 3)
+        .for_folder("assets").unwrap();
+    println!("{:?}", assets);
+    let ref font = assets.join("FiraSans-Regular.ttf");
+    let factory = window.factory.clone();
+    let mut glyphs = Glyphs::new(font, factory).unwrap();
+
+    let mut game = game::Game::new(&settings, glyphs);
     let mut gl = GlGraphics::new(opengl);
     let mut events = Events::new(EventSettings::new());
     while let Some(e) = events.next(&mut window) {
         if let Some(ref args) = e.render_args() {
-            game.render(args, &mut gl);
+            game.render(&e, &mut window);
         }
 
         if let Some(ref args) = e.update_args() {

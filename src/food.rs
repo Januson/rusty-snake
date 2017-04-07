@@ -1,5 +1,4 @@
-use graphics::{ color, rectangle };
-use graphics::context::Context;
+use piston_window::*;
 use opengl_graphics::GlGraphics;
 
 use settings::Settings;
@@ -20,7 +19,7 @@ impl<'a> Food<'a> {
         }
     }
 
-    pub fn render(&self, c: &Context, gl: &mut GlGraphics) {
+    pub fn render(&self, c: &Context, g: &mut G2d) {
         rectangle(
             color::hex("b83e3e"),
             rectangle::square(
@@ -28,7 +27,7 @@ impl<'a> Food<'a> {
                 self.point.y as f64 * self.settings.tile_size,
                 self.settings.tile_size
             ),
-            c.transform, gl
+            c.transform, g
         );
     }
 

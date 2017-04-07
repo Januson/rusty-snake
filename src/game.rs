@@ -1,7 +1,9 @@
-use graphics::clear;
-use graphics::context::Context;
-use opengl_graphics::GlGraphics;
+//use graphics::clear;
+//use graphics::context::Context;
+//use graphics::text;
+//use opengl_graphics::GlGraphics;
 use piston::input::{ Button, RenderArgs, UpdateArgs };
+use piston_window::*;
 use rand::{thread_rng, Rng, sample};
 
 use food::Food;
@@ -20,6 +22,7 @@ pub enum State {
 
 pub struct Game<'a: 'b, 'b> {
     pub food: Vec<Food<'b>>,
+    glyphs: Glyphs,
     level: Level<'a>,
     score: u64,
     settings: &'a Settings,
@@ -30,10 +33,11 @@ pub struct Game<'a: 'b, 'b> {
 }
 
 impl<'a, 'b> Game<'a, 'b> {
-    pub fn new(settings: &'a Settings) -> Game {
+    pub fn new(settings: &'a Settings, glyphs: Glyphs) -> Game {
         let level = level(settings);
         Game {
             food: vec![],
+            glyphs: glyphs,
             level: level,
             score: 0,
             settings: settings,
@@ -44,19 +48,36 @@ impl<'a, 'b> Game<'a, 'b> {
         }
     }
 
-    pub fn render(&mut self, args: &RenderArgs, gl: &mut GlGraphics) {
-        let ref c = Context::new_abs(args.width as f64,args.height as f64);
-        gl.draw(args.viewport(), |_, gl| {
+    pub fn render(&mut self, e: &Input, window: &mut PistonWindow) {
+        window.draw_2d(e, |c, g| {
+
+        //        let ref c = Context::new_abs(args.width as f64,args.height as f64);
             if self.state == State::GameOver {
-                clear(self.settings.board_color, gl);
+                clear(self.settings.board_color, g);
+                let transform = c.transform.trans(10.0, 100.0);
+
+//                clear([0.0, 0.0, 0.0, 1.0], g);
+                text::Text::new_color([0.0, 1.0, 0.0, 1.0], 32).draw(
+                    "Game Over",
+                    &mut self.glyphs,
+                    &c.draw_state,
+                    transform, g
+                );
+                let t_score = c.transform.trans(10.0, 200.0);
+                text::Text::new_color([0.0, 1.0, 0.0, 1.0], 32).draw(
+                    format!("Score: {}", self.score).as_str(),
+                    &mut self.glyphs,
+                    &c.draw_state,
+                    t_score, g
+                );
                 return;
             }
-            clear(self.settings.board_color, gl);
+            clear(self.settings.board_color, g);
 
-            self.level.render(c, gl);
+            self.level.render(&c, g);
 
             for ref mut f in &self.food {
-                f.render(c, gl);
+                f.render(&c, g);
             }
         });
     }

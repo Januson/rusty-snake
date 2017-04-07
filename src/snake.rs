@@ -1,6 +1,7 @@
-use graphics::rectangle;
-use graphics::context::Context;
-use opengl_graphics::GlGraphics;
+//use graphics::rectangle;
+//use graphics::context::Context;
+//use opengl_graphics::GlGraphics;
+use piston_window::*;
 use piston::input::Button;
 use piston::input::keyboard::Key;
 use std::collections::VecDeque;
@@ -30,7 +31,7 @@ impl<'a> Snake<'a> {
         }
     }
 
-    pub fn render(&self, c: &Context, gl: &mut GlGraphics) {
+    pub fn render(&self, c: &Context, g: &mut G2d) {
         for p in self.tail.iter() {
             rectangle(
                 self.settings.snake_color,
@@ -38,8 +39,15 @@ impl<'a> Snake<'a> {
                     p.x as f64 * self.settings.tile_size,
                     p.y as f64 * self.settings.tile_size,
                     self.settings.tile_size),
-                c.transform, gl
+                c.transform, g
             );
+//            rectangle(self.settings.snake_color,
+//                      [(rect[0] + margin) as f64,
+//                          (rect[1]) as f64,
+//                          (rect[2] - 2 * margin) as f64,
+//                          block_height as f64],
+//                      context.transform,
+//                      graphics);
         }        
     }
 

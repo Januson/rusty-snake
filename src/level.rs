@@ -1,6 +1,7 @@
-use graphics::{ color, rectangle };
-use graphics::context::Context;
-use opengl_graphics::GlGraphics;
+//use graphics::{ color, rectangle };
+//use graphics::context::Context;
+//use opengl_graphics::GlGraphics;
+use piston_window::*;
 use piston::input::keyboard::Key;
 use std::collections::VecDeque;
 
@@ -15,7 +16,7 @@ pub struct Level<'a> {
 }
 
 impl<'a> Level<'a> {
-    pub fn render(&self, c: &Context, gl: &mut GlGraphics) {
+    pub fn render(&self, c: &Context, g: &mut G2d) {
         for wall in self.walls.iter() {
             rectangle(
                 color::hex("111111"),
@@ -24,10 +25,10 @@ impl<'a> Level<'a> {
                     wall.y as f64 * self.settings.tile_size,
                     self.settings.tile_size
                 ),
-                c.transform, gl
+                c.transform, g
             );
         }
-        self.snake.render(c, gl);
+        self.snake.render(c, g);
     }
 }
 
